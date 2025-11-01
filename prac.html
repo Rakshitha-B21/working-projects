@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HealTech - Emergency Services</title>
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #a7f3d0, #ffffff, #93c5fd);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px; /* reduced padding */
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-sizing: border-box;
+}
+ nav h1 {
+  font-size: 28px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #2563eb, #16a34a, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  padding-left: 10px; /* adds space from the left edge */
+}
+nav.logo {
+  font-size: 28px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #2563eb, #16a34a, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+}
+
+nav .links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* allow wrapping */
+}
+
+nav .links a {
+  text-decoration: none;
+  font-weight: 500;
+  color: #374151;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+nav .links a:hover {
+  color: #2563eb;
+}
+
+/* Responsive: stack links on small screens */
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  nav .links {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+}
+
+h1.page-title {
+  font-size: 42px;
+  color: #1e40af;
+  margin: 40px 0 30px 0;
+  text-align: center;
+  width: 100%;
+}
+
+.emergency-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  gap: 70px;
+  margin-bottom: 40px;
+  padding: 0 40px;
+}
+
+.emergency-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.emergency-buttons button {
+  width: 250px;
+  padding: 18px;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.video-btn { background: linear-gradient(90deg, #93c5fd, #60a5fa); }   
+.audio-btn { background: linear-gradient(90deg, #6ee7b7, #34d399); }   
+.ambulance-btn { background: linear-gradient(90deg, #fda4af, #f87171); } 
+.emergency-buttons button:hover { opacity: 0.9; transform: scale(1.05); }
+
+.list-container { display: flex; flex-direction: column; gap: 20px; flex-grow: 1; }
+
+.item {
+  background: #fff;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+.item.show { opacity: 1; }
+
+.available-heading {
+  font-size: 20px;
+  color: #1e40af;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.placeholder-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #d1d5db;
+  display: inline-block;
+  border: 2px solid #2563eb;
+  cursor: pointer;
+}
+
+footer {
+  margin-top: auto;
+  background: #1e40af;
+  color: white;
+  width: 100%;
+  padding: 15px;
+  text-align: center;
+}
+footer a { color: #93c5fd; margin: 0 10px; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* Call Modal */
+.call-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.call-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  width: 350px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+.call-box h3 { margin: 15px 0 5px; font-size: 22px; color: #1e40af; }
+.call-status { margin: 10px 0; font-size: 18px; color: #16a34a; font-weight: bold; }
+.end-call {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.end-call:hover { background: #dc2626; }
+
+@media (max-width: 900px) {
+  .emergency-container { flex-direction: column; align-items: center; }
+  .emergency-buttons { align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <h1>HealTech</h1>
+  <div class="links">
+    <a href="#">Home</a>
+    <a href="#">Services</a>
+    <a href="#">Privacy</a>
+    <a href="#">Helpline</a>
+  </div>
+</nav>
+
+<h1 class="page-title">Emergency Services</h1>
+
+<div class="emergency-container">
+  <div class="emergency-buttons">
+    <button class="video-btn" onclick="showDoctors('video')">🎥 Video Call</button>
+    <button class="audio-btn" onclick="showDoctors('audio')">📞 Audio Call</button>
+    <button class="ambulance-btn" onclick="showAmbulances()">🚑 Need Ambulance Service?</button>
+  </div>
+  <div class="list-container">
+    <div class="doctor-list" id="doctor-list"></div>
+    <div class="ambulance-list" id="ambulance-list"></div>
+  </div>
+</div>
+
+<footer>
+  © 2025 HealTech | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+</footer>
+
+<!-- Call Modal -->
+<div class="call-modal" id="callModal">
+  <div class="call-box">
+    <h3 id="callDoctorName">Doctor</h3>
+    <div class="call-status" id="callStatus">Connecting…</div>
+    <button class="end-call" onclick="endCall()">End Call</button>
+  </div>
+</div>
+
+<input type="file" id="uploadInput" style="display:none;" accept="image/*"/>
+
+<script>
+const doctors = {
+  video: [
+    { name: "Dr. Aisha Khan", specialization: "Cardiologist", location: "Delhi", available: true, photo: null },
+    { name: "Dr. Meera Singh", specialization: "Neurologist", location: "Bengaluru", available: true, photo: null },
+    { name: "Dr. Rajesh Verma", specialization: "Pediatrician", location: "Mumbai", available: true, photo: null }
+  ],
+  audio: [
+    { name: "Dr. Sunita Sharma", specialization: "General Physician", location: "Hyderabad", available: true, photo: null },
+    { name: "Dr. Karan Verma", specialization: "ENT", location: "Jaipur", available: true, photo: null },
+    { name: "Dr. Aman Gill", specialization: "Dermatologist", location: "Chennai", available: true, photo: null }
+  ]
+};
+
+const ambulances = [
+  { name: "Ambulance 1", hospital: "PGI Chandigarh", distanceKm: 5, eta: "10 mins", phone: 9876543210 },
+  { name: "Ambulance 2", hospital: "Fortis Mohali", distanceKm: 8, eta: "15 mins", phone: 8765432109 }
+];
+
+document.getElementById("doctor-list").style.display = "none";
+document.getElementById("ambulance-list").style.display = "none";
+
+function showDoctors(type) {
+  document.getElementById("ambulance-list").style.display = "none";
+  const list = document.getElementById("doctor-list");
+  list.style.display = "block";
+  list.innerHTML = `<div class="available-heading">Available at the moment:</div>`;
+
+  doctors[type].filter(d => d.available).forEach((doc, index) => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div style="display:flex; align-items:center; gap:15px;">
+        <span class="placeholder-img" onclick="uploadPhoto('${type}', ${index}, this)"></span>
+        <div>
+          <strong>${doc.name}</strong><br>
+          Specialization: ${doc.specialization}<br>
+          Location: ${doc.location}<br>
+          <button style="margin-top:6px;padding:6px 12px;border:none;border-radius:10px;background:#34d399;color:white;cursor:pointer;"
+            onclick="connectDoctor('${doc.name}','${type}')">📞 Call Now</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+    setTimeout(() => div.classList.add("show"), 10);
+  });
+}
+
+function uploadPhoto(type, index, elem) {
+  const input = document.getElementById("uploadInput");
+  input.click();
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        doctors[type][index].photo = ev.target.result;
+        elem.style.backgroundImage = `url(${ev.target.result})`;
+        elem.style.backgroundSize = "cover";
+        elem.style.backgroundPosition = "center";
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+}
+
+function connectDoctor(name, type) {
+  const modal = document.getElementById("callModal");
+  document.getElementById("callDoctorName").innerText = name;
+  document.getElementById("callStatus").innerText = "Connecting…";
+  modal.style.display = "flex";
+
+  setTimeout(() => {
+    document.getElementById("callStatus").innerText = `${type === "video" ? "Video" : "Audio"} Call Accepted ✅`;
+  }, 2000);
+}
+
+function endCall() {
+  document.getElementById("callModal").style.display = "none";
+}
+
+function showAmbulances() {
+  document.getElementById("doctor-list").style.display = "none";
+  const list = document.getElementById("ambulance-list");
+  list.style.display = "block";
+  list.innerHTML = "";
+  ambulances.sort((a,b) => a.distanceKm - b.distanceKm);
+  ambulances.forEach(a => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <strong>${a.name}</strong><br>
+      Hospital: ${a.hospital}<br>
+      Distance: ${a.distanceKm} km<br>
+      ETA: ${a.eta}<br>
+      Phone: <a href="tel:${a.phone}">${a.phone}</a>
+    `;
+    list.appendChild(div);
+    setTimeout(() => div.classList.add("show"), 10);
+  });
+}
+</script>
+
+</body>
+</html>
