@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        Product Name :
+        <input type="text" id="pname"><br><br>
+        Product Price :
+        <input type="text" id="price"><br><br>
+
+        <button onclick="Calculate()">Add</button>
+        <button onclick="Total()">total</button>
+
+        <p id="result"></p>
+
+        <script>
+            let prices=[];
+            function Calculate(){
+                let name = document.getElementById("pname").value;
+                let price = Number(document.getElementById("price").value);
+
+                if(name===""||price<=0||isNaN(price)){
+                    document.getElementById("result").innerHTML="invalid";
+                    return;
+                }
+
+                prices.push(price);
+
+                document.getElementById("result").innerHTML=name+"Add!";
+            }
+
+            function Total(){
+                let total=0;
+                for(let price of prices){
+                    total+=price;
+
+                    document.getElementById("result").innerHTML="Total ="+total;
+                }
+            }
+        </script>
+
+    </body>
+</html> 
+
+
+
+
