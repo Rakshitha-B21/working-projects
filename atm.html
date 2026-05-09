@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h2>ATM</h2>
+        <p id="result">Enter the amount and withdrwa</p>
+        <input type="text" id="amount" placeholder="Enter the amount "><br><br>
+
+        <button onclick="withdraw()">Withdraw</button>
+
+        <script>
+            let balance = 5000;
+            function withdraw(){
+                try{
+                let amt = Number(document.getElementById("amount").value);
+
+                if(isNaN(amt)){
+                    throw"enter valid";
+                }
+
+                if(amt<=0){
+                    document.getElementById("result").innerHTML="valid number";
+                }
+                else if(amt>balance){
+                    document.getElementById("result").innerHTML="Insufficient balance";
+                }
+
+                else{
+                    balance-=amt;
+                    document.getElementById("result").innerHTML="balance"+balance;
+                }
+            }
+        
+
+        catch(error){
+            document.getElementById("result").innerHTML="Error:"+error;
+        }
+    }
+
+        </script>
+    </body>
+</html>
